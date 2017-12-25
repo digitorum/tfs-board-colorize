@@ -1,0 +1,25 @@
+{
+  "name": "tfs-board-colorize",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "ladygin",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-zip": "^4.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "zip": "cls && gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digitorum/tfs-board-colorize.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/digitorum/tfs-board-colorize/issues"
+  },
+  "homepage": "https://github.com/digitorum/tfs-board-colorize#readme"
+}
