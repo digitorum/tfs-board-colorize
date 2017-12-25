@@ -59,7 +59,7 @@
         }
         this.addCSSRule(selector, rules, 0); // не нашли - добавляем
     }
-    
+
 
     //#endregion
 
@@ -88,7 +88,7 @@
             this.dom = WorkItem.getTiles(this.data["System.Id"]);
             WorkItem.instances[this.data["System.Id"]] = this;
         }
-        
+
         /**
          * Ссылка на дом
          * @var {object}
@@ -106,12 +106,12 @@
          * @var {string}
          */
         WorkItem.prototype.color = null;
-        
+
         /**
          * Перекрасить плитку, если цвет на совпадают
          */
         WorkItem.prototype.recolorize = function () {
-            if (this.dom.find('.tbTileContent').css('background-color') != this.color) { 
+            if (this.dom.find('.tbTileContent').css('background-color') != this.color) {
                 this.colorize();
             }
         }
@@ -121,7 +121,8 @@
          */
         WorkItem.prototype.colorize = function () {
             var that = this;
-            
+            var content = this.dom.find('.tbTileContent');
+
             this.color = (function () {
                 if (that.data["System.WorkItemType"] == 'Task') {
                     switch (that.data["Microsoft.VSTS.Common.Priority"]) {
@@ -155,16 +156,25 @@
                     }
                 }
             })();
-            this.dom.find('.tbTileContent').css('background-color', this.color);
-            this.color = this.dom.find('.tbTileContent').css('background-color'); // обновляем, что бы браузер не путался
+
+            if (content.parent().hasClass('tile-dimmed')) {
+                if (content[0].style.setAttribute != undefined) {
+                    content[0].style.setAttribute('cssText', 'background-color: ' + this.color + ' !important');
+                } else {
+                    content[0].setAttribute('style', 'background-color: ' + this.color + ' !important');
+                }
+            } else {
+                content.css('background-color', this.color);
+            }
+            this.color = content.css('background-color'); // обновляем, что бы браузер не путался
         }
-        
+
         /**
          * Поля воркайтема, необходимые для загрузки
          * @var {array}
          */
         WorkItem.fields = ["System.Id", "System.WorkItemType", "Microsoft.VSTS.Common.Priority"];
-        
+
         /**
          * Получить ссылку на плитку
          * @param {int|undefined} id
@@ -176,17 +186,17 @@
             }
             return $('#tile-' + id);
         }
-        
+
         /**
          * Получить список ID рабочих элементов на борде
          * @return {array}
          */
         WorkItem.getIdsList = function () {
             var ids = [];
-            
+
             this.getTiles().each(function () {
                 var id = parseInt($(this).find('[field="System.Id"]').text(), 10);
-                
+
                 if (!id) {
                     return;
                 }
@@ -194,7 +204,7 @@
             });
             return ids;
         }
-        
+
         /**
          * Загрузить данные воркайтемов
          * @param {array} ids
@@ -214,13 +224,13 @@
                 }
             }
         }
-        
+
         /**
          * Список созданных ранее воркайтемов
          * @var {object}
          */
         WorkItem.instances = {}
-        
+
         /* Создать инстанс воркайтема
          * @ param { array | object } fields 
          * @ param { array } row
@@ -237,7 +247,7 @@
                 // передан воркайтем из события
                 for (var fieldName in fields.fieldMap) {
                     var field = fields.fieldMap[fieldName];
-                    
+
                     if ($.inArray(field.fieldDefinition.referenceName, WorkItem.fields) !== -1) {
                         data[field.fieldDefinition.referenceName] = fields.fieldData[field.fieldDefinition.id];
                     }
@@ -281,7 +291,7 @@
     // перекраска инстансов, если это надо
     // через интервал в виду того, что RESET больше не отслеживанися
     setInterval(function () {
-        for (var id in WorkItem.instances) { 
+        for (var id in WorkItem.instances) {
             WorkItem.instances[id].recolorize();
         }
     }, 400);
@@ -301,6 +311,8 @@
             view.TILE_WIDTH = cell.length ? (cell.innerWidth() / 2 - (view.CELL_PADDING + view.TILE_MARGIN) * 3) : 155;
             if (view.TILE_WIDTH > 185) {
                 view.TILE_WIDTH = 185;
+            } else if (view.TILE_WIDTH < 100) {
+                view.TILE_WIDTH = 100;
             }
             return view.TILE_WIDTH;
         }
