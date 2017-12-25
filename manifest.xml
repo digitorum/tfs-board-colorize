@@ -1,0 +1,8 @@
+<WebAccess version="14.0">
+  <plugin name="TfsBoardColorizeExtension" vendor="digitorum" moreinfo="https://github.com/digitorum/tfs-board-colorize" version="2017-12-25" >
+  <modules>
+    <!-- Хак для версии 14.114.26403.0 (http://vm-tfs:8080/tfs/_home/About) нэймспэйс должен быть БЕЗ ".js" -->
+    <module namespace="TfsBoardColorizeExtension.js" loadAfter="TFS.Agile.TaskBoard.View"/>
+  </modules>
+  </plugin>
+</WebAccess>
